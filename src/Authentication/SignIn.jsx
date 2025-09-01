@@ -66,8 +66,6 @@ const SignIn = () => {
 
         showSuccessAlert();
         localStorage.setItem('user', JSON.stringify(data.user));
-
-        // Dispatch event to update navbar
         window.dispatchEvent(new Event('userUpdated'));
 
         setTimeout(() => {
@@ -86,8 +84,8 @@ const SignIn = () => {
   };
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-base-200 to-base-300 py-8 px-4 flex items-center justify-center">
-      <div className="flex flex-col lg:flex-row-reverse items-center justify-center gap-8 lg:gap-16 w-full max-w-7xl h-full">
+    <div className="flex justify-center items-start min-h-screen bg-gradient-to-br from-base-200 to-base-300 py-8 px-4">
+      <div className="flex flex-col lg:flex-row-reverse items-center justify-center gap-12 w-full max-w-7xl">
         
         {/* Lottie Animation */}
         <div className="hidden lg:block lg:w-1/2 transform hover:scale-105 transition-transform duration-300">
@@ -96,11 +94,11 @@ const SignIn = () => {
 
         {/* Sign In Card */}
         <div className="card w-full max-w-md shadow-2xl bg-base-100 backdrop-blur-sm bg-opacity-90">
-          <div className="card-body p-6 sm:p-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-center mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+          <div className="card-body p-8">
+            <h1 className="text-4xl font-bold text-center mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Welcome Back
             </h1>
-            <p className="text-center text-gray-500 mb-6 sm:mb-8">Sign in to your account</p>
+            <p className="text-center text-gray-500 mb-8">Sign in to your account</p>
 
             <form onSubmit={handleSubmit}>
               <div className="form-control">
@@ -116,7 +114,7 @@ const SignIn = () => {
                 />
               </div>
 
-              <div className="form-control mt-4 sm:mt-6">
+              <div className="form-control mt-6">
                 <label className="label"><span className="label-text font-medium">Password</span></label>
                 <input
                   type="password"
@@ -134,14 +132,14 @@ const SignIn = () => {
                 </label>
               </div>
 
-              <div className="form-control mt-6 sm:mt-8">
+              <div className="form-control mt-8">
                 <button type="submit" className="btn btn-primary w-full" disabled={loading}>
                   {loading ? <span className="loading loading-spinner"></span> : 'Sign In'}
                 </button>
               </div>
             </form>
 
-            <div className="text-center mt-4 sm:mt-6">
+            <div className="text-center mt-6">
               <p className="text-sm">
                 Don't have an account?{' '}
                 <Link to="/signup" className="link link-primary">Sign Up</Link>

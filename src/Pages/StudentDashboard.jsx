@@ -1,74 +1,100 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 
 const StudentDashboard = () => {
-  const navigate = useNavigate();
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [joiningId, setJoiningId] = useState(null);
+  const user = JSON.parse(localStorage.getItem('user')); // logged-in user
 
-  const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/signin');
+  // Fetch all courses
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('http://localhost:4000/courses');
+      if (!res.ok) throw new Error('Failed to fetch courses');
+      const data = await res.json();
+      setCourses(data);
+    } catch (err) {
+      console.error(err);
+      Swal.fire('Error', 'Could not load courses', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const user = JSON.parse(localStorage.getItem('user'));
+  useEffect(() => {
+    fetchCourses();
+  }, []);
 
-  // Dummy data for student
-  const courses = [
-    { id: 1, title: 'Mathematics', instructor: 'Dr. Smith', progress: '80%' },
-    { id: 2, title: 'Physics', instructor: 'Prof. Johnson', progress: '60%' },
-    { id: 3, title: 'History', instructor: 'Dr. Brown', progress: '90%' },
-  ];
+  // Join course
+  const joinCourse = async (courseId) => {
+    if (!user?._id) {
+      Swal.fire('Error', 'User not logged in', 'error');
+      return;
+    }
 
-  const assignments = [
-    { id: 1, title: 'Math Assignment 1', due: '2025-08-25', status: 'Submitted' },
-    { id: 2, title: 'Physics Lab Report', due: '2025-08-27', status: 'Pending' },
-    { id: 3, title: 'History Essay', due: '2025-08-30', status: 'Pending' },
-  ];
+    try {
+      setJoiningId(courseId);
+      const res = await fetch(`http://localhost:4000/courses/${courseId}/join`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentId: user._id }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || 'Failed to join course');
+
+      Swal.fire('Success', data.message, 'success');
+      fetchCourses(); // Refresh courses to show updated joined status
+    } catch (err) {
+      console.error('Error joining course:', err);
+      Swal.fire('Error', err.message, 'error');
+    } finally {
+      setJoiningId(null);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-end">
-      <div className="w-4/5 p-8 text-gray-800">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">Student Dashboard</h1>
-          <button onClick={handleLogout} className="btn btn-error">Logout</button>
-        </div>
+    <div className="min-h-screen bg-gray-100 flex justify-center p-6">
+      <div className="w-full max-w-6xl">
+        <h1 className="text-3xl font-bold mb-6 text-gray-800">Available Courses</h1>
 
-        <p className="mb-4">Welcome, <strong>{user?.firstName} {user?.lastName}</strong>!</p>
-        <p className="mb-8">Your role: <strong>{user?.role}</strong></p>
+        {loading ? (
+          <p className="text-center text-gray-500">Loading courses...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {courses.map((course) => {
+              const joined = course.students?.includes(user?._id);
+              const isJoining = joiningId === course._id;
 
-        <section className="mb-8">
-          <h2 className="text-2xl font-semibold mb-4">My Courses</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {courses.map(course => (
-              <div key={course.id} className="p-4 bg-white rounded-lg shadow text-gray-800">
-                <h3 className="font-bold text-lg">{course.title}</h3>
-                <p>Instructor: {course.instructor}</p>
-                <p>Progress: {course.progress}</p>
-              </div>
-            ))}
+              return (
+                <div
+                  key={course._id}
+                  className="bg-white p-6 rounded-lg shadow-md text-gray-800"
+                >
+                  <h2 className="text-xl font-semibold">{course.title}</h2>
+                  <p className="text-gray-600 mt-1">Code: {course.courseCode}</p>
+                  <p className="mt-3">{course.description}</p>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Joined Students: {course.students?.length || 0}
+                  </p>
+                  <button
+                    className={`mt-4 w-full px-4 py-2 rounded ${
+                      joined
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700 text-white'
+                    }`}
+                    disabled={joined || isJoining}
+                    onClick={() => joinCourse(course._id)}
+                  >
+                    {joined ? 'Joined' : isJoining ? 'Joining...' : 'Join Course'}
+                  </button>
+                </div>
+              );
+            })}
           </div>
-        </section>
-
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Assignments</h2>
-          <table className="w-full table-auto bg-white rounded-lg shadow text-gray-800">
-            <thead>
-              <tr className="bg-gray-200 text-gray-800">
-                <th className="px-4 py-2">Title</th>
-                <th className="px-4 py-2">Due Date</th>
-                <th className="px-4 py-2">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {assignments.map(assign => (
-                <tr key={assign.id} className="text-center border-t text-gray-800">
-                  <td className="px-4 py-2">{assign.title}</td>
-                  <td className="px-4 py-2">{assign.due}</td>
-                  <td className="px-4 py-2">{assign.status}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        )}
       </div>
     </div>
   );

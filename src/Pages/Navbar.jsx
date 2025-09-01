@@ -64,13 +64,37 @@ const Navbar = () => {
 
             {user?.role === 'faculty' && (
               <>
-                <li><Link to="/create-course" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '📘' : '📘 Create Course'}</Link></li>
-                <li><Link to="/add-material" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '📂' : '📂 Add Materials'}</Link></li>
-                <li><Link to="/assignments" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '📝' : '📝 Assignments'}</Link></li>
-                <li><Link to="/grading" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '✅' : '✅ Grading'}</Link></li>
-                <li><Link to="/qa" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '💬' : '💬 Q&A'}</Link></li>
-                <li><Link to="/manage-students" className="block px-6 py-3 hover:bg-gray-100 transition-colors">{collapsed ? '👥' : '👥 Manage Students'}</Link></li>
+                <li>
+                  <Link
+                    to="/create-course"
+                    className="block px-6 py-3 hover:bg-gray-100 transition-colors"
+                  >
+                    {collapsed ? '📘' : '📘 Create Course'}
+                  </Link>
+                </li>
+              
+              
+          
+                <li>
+                  <Link
+                    to="/manage-students"
+                    className="block px-6 py-3 hover:bg-gray-100 transition-colors"
+                  >
+                    {collapsed ? '👥' : '👥 Manage Students'}
+                  </Link>
+                </li>
               </>
+            )}
+
+            {user?.role === 'student' && (
+              <li>
+                <Link
+                  to="/student/enrolled-courses"
+                  className="block px-6 py-3 hover:bg-gray-100 transition-colors"
+                >
+                  {collapsed ? '🎓' : '🎓 Enrolled-Course'}
+                </Link>
+              </li>
             )}
           </ul>
         </nav>
@@ -80,7 +104,9 @@ const Navbar = () => {
           {user ? (
             <div className="flex items-center gap-3">
               <img
-                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(user.firstName + ' ' + user.lastName)}`}
+                src={`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                  user.firstName + ' ' + user.lastName
+                )}`}
                 alt="User"
                 className="w-10 h-10 rounded-full"
               />
@@ -135,13 +161,37 @@ const Navbar = () => {
 
               {user?.role === 'faculty' && (
                 <>
-                  <li><Link to="/create-course" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>📘 Create Course</Link></li>
-                  <li><Link to="/add-material" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>📂 Add Materials</Link></li>
-                  <li><Link to="/assignments" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>📝 Assignments</Link></li>
-                  <li><Link to="/grading" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>✅ Grading</Link></li>
-                  <li><Link to="/qa" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>💬 Q&A</Link></li>
-                  <li><Link to="/manage-students" className="block px-4 py-2 hover:bg-gray-100" onClick={() => setMenuOpen(false)}>👥 Manage Students</Link></li>
+                  <li>
+                    <Link
+                      to="/create-course"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      📘 Create Course
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/manage-students"
+                      className="block px-4 py-2 hover:bg-gray-100"
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      👥 Manage Students
+                    </Link>
+                  </li>
                 </>
+              )}
+
+              {user?.role === 'student' && (
+                <li>
+                  <Link
+                    to="/student/join-course"
+                    className="block px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setMenuOpen(false)}
+                  >
+                    🎓 Join Course
+                  </Link>
+                </li>
               )}
             </ul>
 

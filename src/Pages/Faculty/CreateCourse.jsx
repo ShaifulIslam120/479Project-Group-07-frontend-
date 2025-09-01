@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const CreateCourse = () => {
@@ -20,10 +20,12 @@ const CreateCourse = () => {
     const file = e.target.files[0];
     if (file && file.type !== 'application/pdf') {
       toast.error('Only PDF files are allowed');
+      e.target.value = '';
       return;
     }
     if (file && file.size > 5 * 1024 * 1024) {
       toast.error('File size must be less than 5MB');
+      e.target.value = '';
       return;
     }
     setMaterials(file);
@@ -73,9 +75,7 @@ const CreateCourse = () => {
         onSubmit={handleSubmit}
         className="w-4/5 md:w-3/5 bg-white p-8 rounded-xl shadow-lg space-y-6"
       >
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
-          Create Course
-        </h1>
+        <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">Create Course</h1>
 
         <div className="space-y-2">
           <label className="block text-gray-700 font-semibold">Course Title</label>
@@ -86,7 +86,6 @@ const CreateCourse = () => {
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter course title"
             required
-            aria-label="Course title"
           />
         </div>
 
@@ -97,9 +96,8 @@ const CreateCourse = () => {
             value={courseCode}
             onChange={(e) => setCourseCode(e.target.value)}
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Enter course code (e.g., CSE101)"
+            placeholder="Enter course code"
             required
-            aria-label="Course code"
           />
         </div>
 
@@ -112,7 +110,6 @@ const CreateCourse = () => {
             className="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="Enter course description"
             required
-            aria-label="Course description"
           />
         </div>
 
@@ -124,8 +121,8 @@ const CreateCourse = () => {
             onChange={handleFileChange}
             accept="application/pdf"
             className="w-full text-gray-700"
-            aria-label="Upload course materials (PDF)"
           />
+          {materials && <p className="text-gray-600 mt-1">Selected file: {materials.name}</p>}
         </div>
 
         <button
@@ -136,6 +133,8 @@ const CreateCourse = () => {
           {isLoading ? 'Creating...' : 'Create Course'}
         </button>
       </form>
+
+      <ToastContainer />
     </div>
   );
 };

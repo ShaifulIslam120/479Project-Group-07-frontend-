@@ -7,7 +7,6 @@ const FacultyDashboard = () => {
 
   const fetchCourses = async () => {
     if (!user?._id) return;
-
     try {
       const res = await fetch(`http://localhost:4000/courses/faculty/${user._id}`);
       const data = await res.json();
@@ -22,14 +21,17 @@ const FacultyDashboard = () => {
   }, [user]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-base-200 to-base-300 py-8 px-4 flex items-center justify-center">
-      <div className="w-full max-w-7xl h-full overflow-y-auto p-6 bg-white/90 backdrop-blur-md rounded-xl shadow-lg text-gray-900">
+    <div className="flex justify-center items-start min-h-screen bg-gradient-to-br from-base-200 to-base-300 py-8 px-4">
+      <div className="w-full max-w-7xl h-full p-6 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl overflow-y-auto">
+        
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold">Faculty Dashboard</h1>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+            Faculty Dashboard
+          </h1>
           <Link
             to="/create-course"
-            className="bg-blue-600 text-white px-4 py-2 sm:px-5 sm:py-2 rounded-md hover:bg-blue-700 transition-colors text-center"
+            className="btn btn-primary text-white w-full sm:w-auto text-center"
           >
             + Create New Course
           </Link>
@@ -37,7 +39,7 @@ const FacultyDashboard = () => {
 
         {/* Courses */}
         {courses.length === 0 ? (
-          <p className="text-gray-600 text-lg">No courses created yet.</p>
+          <p className="text-gray-600 text-lg text-center">No courses created yet.</p>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {courses.map(course => (
